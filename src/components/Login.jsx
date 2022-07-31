@@ -1,23 +1,44 @@
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "../App.css";
 import { Form, Input, Button, message,notification } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { history } from "../history";
+import isAuthenticated from "../utils/isAuthenticated";
 import axiosInstance from '../utils/axiosinstance';
 import jwtDecode from 'jwt-decode';
+import { loginSucess } from '../slice/userSlice/userSlice';
+import { useNavigate } from 'react-router-dom'
+import { useSelector,useDispatch } from 'react-redux'
 const FormItem = Form.Item;
 
+const  Login=()=> {
 
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  
+  
+ const checkLoginStatus=()=>{
+    if(isAuthenticated()){
+      navigate("/home")
+    }
+  };
 
-
-export default function Login() {
-
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
  
+
+
   const [phone, setPhone] = useState('');
-  const [error, setError] = useState("");
+  const [error, setError] = useState(["user not found"]);
   const [loading, setLoading] = useState(false);
 
+
+  const notificationsMessege =(err)=>{
+    notification.error({
+      message: `Username not found`
+      
+    });
+  }
 
 
   const handelSubmit = (e) => {
@@ -31,10 +52,12 @@ export default function Login() {
       .post('/user/login', loginData)
       .then((res) => {
         const dt = jwtDecode(res.data.token);
-        localStorage.setItem("token", res.data.token);
-        setLoading(false);
-
+        localStorage.setItem("token", res.data.token)
+        dispatch(loginSucess(res.data))
+          setLoading(false);
         // console.log(res.data);
+        navigate("/home")
+        
         console.log(dt);
 
       })
@@ -42,10 +65,12 @@ export default function Login() {
         if (err.response) {
           setLoading(false)
           setError(err.response.data)
-          notification.error({
-            message: `${error.message}`,
+          notificationsMessege(error);
+          // notification.error({
+          //   message: `Username not found: ${error.message}`
             
-          });
+          // });
+         
 
         }
       })
@@ -65,28 +90,21 @@ export default function Login() {
     <div>
 
       <div className={"lContainer"}>
+        
         <div className="lItem">
 
           <div className="loginForm">
             <h2>Login</h2>
             <Form className="login-form" >
-
-              {/* {error && (
-               message.error(` ${error.message}`)
-              //  Modal.error(config)
-              )} */}
-
-
-
-
              <Form.Item type="number"
                 name='phone'
                 placeholder="Phone Number"
-                rules={[{ required: true, message: 'Please input your username!' }, { len: 10 }]} hasFeedback>
+                rules={[{ required: true, message: 'Please input your username!' }, { len: 10 }]}>
                 <Input
                   prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                   type='number'
                   onChange={handleChange}
+                  allowClear
                 />
 
               </Form.Item>
@@ -112,3 +130,7 @@ export default function Login() {
     </div>
   )
 }
+
+
+
+export default Login;

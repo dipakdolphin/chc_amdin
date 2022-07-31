@@ -1,7 +1,23 @@
-import React from 'react';
+import React,{useEffect} from 'react';
+import isAuthenticated from '../utils/isAuthenticated';
+import { useNavigate } from 'react-router-dom';
+
 import Layouts from "./Layout";
 
-export default function Home() {
+export default function Home(props) {
+
+  const navigate = useNavigate();
+
+  const checkLoginStatus=()=>{
+    if(!isAuthenticated()){
+      navigate("/")
+    }
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
   return (
     <Layouts>
       <div style={{display:'flex',flex:1, justifyContent:'center', alignItems:'center'}}>

@@ -1,5 +1,7 @@
 import { Breadcrumb, Layout, Menu } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { history } from "../history";
+
 import { HomeOutlined,PoweroffOutlined } from "@ant-design/icons";
 import React from 'react';
 import "../App.css"
@@ -7,8 +9,21 @@ const { Header, Content, Footer } = Layout;
 
 const { SubMenu } = Menu;
 
+ const handleLogout = ()=>{
+  localStorage.removeItem("token")
+    history.push("/")
+    window.location.reload();
+  }
+
 
 const Layouts = (props) => (
+  //  {navigate = useNavigate()}
+
+  // { const handleLogout = ()=>{
+  // localStorage.removeItem("token")
+  //   navigate("/")
+  // }}
+
   <Layout>
     <Header
       style={{
@@ -38,47 +53,48 @@ const Layouts = (props) => (
           
         </SubMenu>
                  <SubMenu key="sub2" title="Machine Setup">
-          <Menu.Item key="1.1">
+          <Menu.Item key="2.1">
             <Link to="/staffinfo">Staff Infromartion</Link>
           </Menu.Item>
-          <Menu.Item key="1.2">
+          <Menu.Item key="2.2">
             <Link to="/stafftransections">
               Staff Transection
             </Link>
           </Menu.Item>
-          <Menu.Item key="1.3">
+          <Menu.Item key="2.3">
             <Link to="/staffsalarysheet" >
               Staff Salary Sheet</Link> </Menu.Item>
         </SubMenu>
         <SubMenu key="sub3" title="Media Setup">
-          <Menu.Item key="1.1">
+          <Menu.Item key="3.1">
             <Link to="/staffinfo">Staff Infromartion</Link>
           </Menu.Item>
-          <Menu.Item key="1.2">
+          <Menu.Item key="3.2">
             <Link to="/stafftransections">
               Staff Transection
             </Link>
           </Menu.Item>
-          <Menu.Item key="1.3">
+          <Menu.Item key="3.3">
             <Link to="/staffsalarysheet" >
               Staff Salary Sheet</Link> </Menu.Item>
         </SubMenu>
         <SubMenu key="sub4" title="General Setup">
-          <Menu.Item key="1.1">
+          <Menu.Item key="4.1">
             <Link to="/staffinfo">Staff Infromartion</Link>
           </Menu.Item>
-          <Menu.Item key="1.2">
+          <Menu.Item key="4.2">
             <Link to="/stafftransections">
               Staff Transection
             </Link>
           </Menu.Item>
-          <Menu.Item key="1.3">
+          <Menu.Item key="4.3">
             <Link to="/staffsalarysheet" >
               Staff Salary Sheet</Link> </Menu.Item>
         </SubMenu>
         <SubMenu  key="sub5"  title="Administrator" style={{position:'revert'}} >
-          <Menu.Item key="1.1">
-            <Link to="/staffinfo">Log Out</Link>
+          <Menu.Item key="5.1"  >
+            <p onClick={handleLogout}>Log Out</p>
+            {/* <Link to="/">Log Out</Link> */}
           </Menu.Item>
           
         </SubMenu>
@@ -114,5 +130,6 @@ const Layouts = (props) => (
     </Footer>
   </Layout>
 );
+
 
 export default Layouts;
